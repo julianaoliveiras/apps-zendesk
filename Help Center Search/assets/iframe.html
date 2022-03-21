@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/combine/npm/@zendeskgarden/css-bedrock@7.0.21,npm/@zendeskgarden/css-utilities@4.3.0,npm/@zendeskgarden/css-forms@7.0.9,npm/@zendeskgarden/css-buttons@7.0.8,npm/@zendeskgarden/css-menus@9.0.9,npm/@zendeskgarden/css-tooltips@4.1.18,npm/@zendeskgarden/css-arrows@3.1.1"
+    />
+    <style>
+      .c-menu__item::before {
+        content: "";
+      }
+
+      .c-menu__item-result {
+        padding: 0px 0px 0px 15px;
+        margin-bottom: 10px;
+      }
+
+      ul#search_results {
+        width: 100%;
+        min-height: 155px;
+      }
+
+      .result-actions {
+        padding: 4px;
+      }
+
+      .result-title {
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+        text-overflow: ellipsis;
+      }
+
+      /* CSS for the tooltips*/
+      .c-tooltip {
+        display: none;
+      }
+
+      .action-tooltip-active {
+        display: block;
+        position: absolute;
+        z-index: 100;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="l-wrapper--370" onsubmit="">
+      <div class="c-txt">
+        <div class="c-txt__input c-txt__input--media">
+          <div class="c-txt__input--media__figure">
+            <svg>
+              <use xlink:href="index.svg#zd-svg-icon-16-search-stroke" />
+            </svg>
+          </div>
+          <input
+            class="c-txt__input c-txt__input--bare c-txt__input--media__body"
+            id="search_term"
+            onkeydown="searchHelpCenter()"
+            type="text"
+          />
+        </div>
+        <ul
+          class="u-mv-sm c-menu u-opacity-opaque u-visibility-visible u-position-static"
+          id="search_results"
+          role="menu"
+        >
+          <li class="c-menu__item c-menu__item--header" id="results-title">
+            Results
+          </li>
+        </ul>
+      </div>
+    </form>
+    <script src="https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.js"></script>
+    <script>
+      var client = ZAFClient.init();
+      client.invoke("resize", { width: "100%", height: "600px" });
+
+      client.on("app.registered", function(e) {
+        client.get("ticket.subject").then(function(result) {
+          document.getElementById("search_term").value =
+            result["ticket.subject"];
+
+          // Trigger the initial search after the app has been loaded
+          searchHelpCenter();
+        });
+      });
+
+      function searchHelpCenter() {
+        var query = document.getElementById("search_term").value;
+        if (query.length === 0) {
+          return;
+        }
+
+        // Make a request to the Help Center API
+        // using the value of the search term input
+        // field as the search query
+        client
+          .request("/api/v2/help_center/articles/search.json?query=" + query)
+          .then(
+            function(search) {
+              // Create HTML nodes for each result to display
+              resultElements = search.results.map(result => {
+                return renderResult(result);
+              });
+
+              var resultsTitle = document.getElementById("results-title");
+              if (resultElements.length === 0) {
+                resultsTitle.innerText = "No Results";
+              } else {
+                resultsTitle.innerText = "Results";
+              }
+
+              var container = document.getElementById("search_results");
+
+              // Remove previous results from the list to avoid duplicates
+              while (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+              }
+
+              // Insert the new list of search results into our page
+              for (var i in resultElements) {
+                container.appendChild(resultElements[i]);
+              }
+            },
+            function(response) {
+              console.error(response.responseText);
+            }
+          );
+      }
+
+      function stripHTML(html) {
+        var tempElement = document.createElement("span");
+        tempElement.innerHTML = html;
+        return tempElement.textContent;
+      }
+
+      function viewArticle(url) {
+        window.open(url, "_blank");
+      }
+
+      function useArticle(snippet, url) {
+        client.invoke(
+          "ticket.editor.insert",
+          snippet + '<br /><br /><a href="' + url + '">' + url + "</a>"
+        );
+
+        client.invoke("ticket.tags.add", "used-help-center-app");
+      }
+
+      // This is only a helper method to construct an HTML node
+      // for a search result, you will most likely replace this with
+      // your UI framework of choice, for example Vue.js or React
+      function renderResult(result) {
+        var itemElement = document.createElement("li");
+        itemElement.classList =
+          "c-menu__item c-menu__item--media c-menu__item-result";
+        itemElement.setAttribute("role", "menu");
+
+        var mediaBody = document.createElement("div");
+        mediaBody.classList = "c-menu__item--media__body";
+
+        var resultTitle = document.createElement("span");
+        resultTitle.classList = "result-title";
+        resultTitle.innerText = result.title;
+        mediaBody.appendChild(resultTitle);
+
+        var itemMeta = document.createElement("span");
+        itemMeta.classList = "c-menu__item__meta";
+        itemMeta.innerText = stripHTML(result.snippet);
+
+        var itemActions = document.createElement("span");
+        itemActions.classList = "c-menu__item__meta result-actions";
+
+        // Open Article action
+        var openArticleAction = document.createElement("a");
+        openArticleAction.setAttribute("alt", "Open Article");
+        openArticleAction.classList =
+          "c-btn--icon c-btn--basic u-mr-xs u-mt-xxs u-display-inline";
+        openArticleAction.onclick = function() {
+          viewArticle(result.html_url);
+        };
+        openArticleAction.innerHTML =
+          '<svg class="c-btn__icon"> \
+            <use xlink:href="index.svg#zd-svg-icon-12-globe-stroke" /> \
+          </svg>';
+        openArticleAction.onmouseenter = function(event) {
+          var tooltip = createTooltip("Browse Article", "open-action-tooltip");
+
+          var firstChild = document.body.firstChild;
+          firstChild.parentNode.insertBefore(tooltip, firstChild);
+
+          tooltip.style.top = event.clientY + 20 + "px";
+          tooltip.style.left = event.clientX - 10 + "px";
+        };
+        openArticleAction.onmouseleave = function(event) {
+          document.getElementById("atooltip").remove();
+        };
+        itemActions.appendChild(openArticleAction);
+
+        // Use article action
+        var useArticleAction = document.createElement("a");
+        useArticleAction.setAttribute("alt", "Use Article");
+        useArticleAction.classList =
+          "c-btn--icon c-btn--basic u-mr-xs u-mt-xxs u-display-inline";
+        useArticleAction.onclick = function() {
+          useArticle(stripHTML(result.snippet), result.html_url);
+        };
+        useArticleAction.innerHTML =
+          '<svg class="c-btn__icon"> \
+            <use xlink:href="index.svg#zd-svg-icon-12-copy-stroke" /> \
+          </svg>';
+        useArticleAction.onmouseenter = function(event) {
+          var tooltip = createTooltip("Link Article", "use-action-tooltip");
+
+          var firstChild = document.body.firstChild;
+          firstChild.parentNode.insertBefore(tooltip, firstChild);
+
+          tooltip.style.top = event.clientY + 20 + "px";
+          tooltip.style.left = event.clientX - 10 + "px";
+        };
+        useArticleAction.onmouseleave = function(event) {
+          document.getElementById("atooltip").remove();
+        };
+        itemActions.appendChild(useArticleAction);
+
+        // Adding child nodes into the DOM
+        itemElement.appendChild(mediaBody);
+        mediaBody.appendChild(itemMeta);
+        itemMeta.appendChild(itemActions);
+
+        return itemElement;
+      }
+
+      function createTooltip(content, cls) {
+        var tooltip = document.createElement("div");
+        tooltip.setAttribute("id", "atooltip");
+        tooltip.classList =
+          "c-tooltip c-tooltip--medium c-arrow c-arrow--tl action-tooltip-active " +
+          cls;
+        tooltip.innerText = content;
+        return tooltip;
+      }
+    </script>
+  </body>
+</html>

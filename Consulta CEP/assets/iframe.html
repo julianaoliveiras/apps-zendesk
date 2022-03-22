@@ -19,15 +19,35 @@
 </head>
 <body>
   <div ng-app="angularjs" ng-controller="angularjs">
-    <div>
-      <form>
-        <div class="input-group">
-          <span class="input-group-addon">CEP</span>
-          <input id="msg" type="text" class="form-control" name="msg" placeholder="Informe o CEP:">
-        </div>
-        <button type="button" class="btn btn-success btn-block" ng-click="consultaCEP()">Consultar</button>
-      </form>
-    </div>
+    <form>
+      <div class="input-group">
+        <span class="input-group-addon">CEP</span>
+        <input ng-model="consultaCEP" id="consultaCEP" type="text" class="form-control" required="required" name="msg" placeholder="Informe o CEP:">
+      </div>
+      <button type="button" class="btn btn-success btn-block" ng-click="consultar()">Consultar</button>
+    </form>
+    <table>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>CEP</td>
+        <td>&nbsp{{cliente.cep}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Logradouro</td>
+        <td>&nbsp{{cliente.logradouro}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Bairro</td>
+        <td>&nbsp{{cliente.bairro}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Localidade</td>
+        <td>&nbsp{{cliente.localidade}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>UF</td>
+        <td>&nbsp{{cliente.uf}}</td>
+      </tr>
+    </table>
   </div>
   <h2 class="u-semibold u-fs-xl"></h2>
   <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
@@ -38,6 +58,7 @@
     client.invoke('resize', { width: '100%', height: '200px' });
   </script>
 </body>
+<!-- Chamada dos scripts para rodar o iframe.html --> 
 <script src ="app.js"></script>
 <script src="controller/main.controller.js"></script>
 <script src="service/zendesk.service.js"></script>

@@ -3,12 +3,14 @@
     angularjs.service('zendeskService', ["$q", function($q) {
         
         var client = ZAFClient.init();
-       
+
         return {
-            catchPedido: function () {
+
+            pegarCEP: function (cep) {
                 var deferred = $q.defer();
+
                 let options = {
-                    url: "https://viacep.com.br/ws/json/",
+                    url: "https://viacep.com.br/ws/" + cep + "/json/",
                     cors: false,
                     method: "GET",
                 };
@@ -20,7 +22,6 @@
                     });
                 return deferred.promise;
             }
-            
-        }   
-    }])
+        }
+    }]);
 })();

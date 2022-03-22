@@ -19,15 +19,47 @@
 </head>
 <body>
   <div ng-app="angularjs" ng-controller="angularjs">
-    <div>
-      <form>
-        <div class="input-group">
-          <span class="input-group-addon">CPF</span>
-          <input ng-model="consultaCPF" id="msg" type="text" class="form-control" name="msg" placeholder="Informe o CPF:">
-        </div>
-        <button type="button" class="btn btn-success btn-block" ng-click="consulta()">Consultar</button>
-      </form>
-    </div>
+    <form>
+      <div class="input-group">
+        <span class="input-group-addon">CPF</span>
+        <input ng-model="consultaCPF" id="consultaCPF" type="text" required="required" class="form-control" name="msg" placeholder="Informe o CPF:">
+      </div>
+      <button type="button" class="btn btn-success btn-block" ng-click="consultar()">Consultar</button>
+    </form>
+    <table>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>ID</td>
+        <td>&nbsp{{cliente.id_vtex}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Número</td>
+        <td>&nbsp{{cliente.number}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Data</td>
+        <td>&nbsp{{cliente.data}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Status</td>
+        <td>&nbsp{{cliente.status}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Source:</td>
+        <td>&nbsp{{cliente.source}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Valor</td>
+        <td>&nbsp{{cliente.value}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Descrição</td>
+        <td>&nbsp{{cliente.description}}</td>
+      </tr>
+      <tr ng-repeat="cliente in dadosCliente">
+        <td>Transpotadora</td>
+        <td>&nbsp{{cliente.trasnportadora}}</td>
+      </tr>
+    </table>
   </div>
   <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
   <script>
@@ -36,5 +68,10 @@
     var client = ZAFClient.init();
     client.invoke('resize', { width: '100%', height: '200px' });
   </script>
+  
+  <!-- Chamada dos scripts para rodar o iframe.html --> 
+  <script src ="app.js"></script>
+  <script src="controller/main.controller.js"></script>
+  <script src="service/zendesk.service.js"></script>
 </body>
 </html>

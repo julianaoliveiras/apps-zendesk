@@ -20,11 +20,8 @@
 <body>
   <div ng-app="angularjs" ng-controller="angularjs">
     <div class="form-group green-border-focus">
-      
-      {{Arraydata.target}}
-      
       <textarea class="form-control" ng-model="Arraydata.attributes.texto" id="exampleFormControlTextarea5" rows="6"></textarea>
-      <button type="button" class="btn btn-success btn-block" ng-click="salvar(Arraydata.attributes.texto)">Salvar</button>
+      <button type="button" class="btn btn-success btn-block" ng-click="salvarNotas(Arraydata.attributes.texto)">Salvar</button> 
     </div>
   </div>
   <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>

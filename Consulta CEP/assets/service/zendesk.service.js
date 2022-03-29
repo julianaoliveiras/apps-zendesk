@@ -4,13 +4,12 @@
         
         var client = ZAFClient.init();
 
-        return {
-
-            pegarCEP: function (cep) {
+        return {  
+            
+            pegarCEP: function (urlCEP, cep) {
                 var deferred = $q.defer();
-
                 let options = {
-                    url: "https://viacep.com.br/ws/" + cep + "/json/",
+                    url: urlCEP + cep + "/json/",
                     cors: false,
                     method: "GET",
                 };

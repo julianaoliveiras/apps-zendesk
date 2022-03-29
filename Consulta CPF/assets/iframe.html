@@ -26,47 +26,59 @@
       </div>
       <button type="button" class="btn btn-success btn-block" ng-click="consultar()">Consultar</button>
     </form>
+    <br><h4><mark>Dados do Cliente</mark></h4>
+      <table>
+        <tr>
+        <td>Nome</td>  
+        <td>RG</td> 
+        <td>CPF</td> 
+        <td>E-mail</td>
+      </tr>     
+      <tr>
+        <td>&nbsp{{dadosCliente.nome}}</td>
+        <td>&nbsp{{dadosCliente.rg}}</td>
+        <td>&nbsp{{dadosCliente.cpf}}</td> 
+        <td>&nbsp{{dadosCliente.email}}</td> 
+      </tr>
+    </table> 
+    <br><h4><mark>Dados do Pedido</mark></h4>  
     <table>
-      <tr ng-repeat="cliente in dadosCliente">
+      <tr>
         <td>ID</td>
-        <td>&nbsp{{cliente.id_vtex}}</td>
-      </tr>
-      <tr ng-repeat="cliente in dadosCliente">
         <td>Número</td>
-        <td>&nbsp{{cliente.number}}</td>
-      </tr>
-      <tr ng-repeat="cliente in dadosCliente">
         <td>Data</td>
-        <td>&nbsp{{cliente.data}}</td>
-      </tr>
-      <tr ng-repeat="cliente in dadosCliente">
         <td>Status</td>
-        <td>&nbsp{{cliente.status}}</td>
-      </tr>
-      <tr ng-repeat="cliente in dadosCliente">
-        <td>Source:</td>
-        <td>&nbsp{{cliente.source}}</td>
-      </tr>
-      <tr ng-repeat="cliente in dadosCliente">
+        <td>Source</td>
         <td>Valor</td>
-        <td>&nbsp{{cliente.value}}</td>
-      </tr>
-      <tr ng-repeat="cliente in dadosCliente">
         <td>Descrição</td>
-        <td>&nbsp{{cliente.description}}</td>
+        <td>Transportadora</td>
       </tr>
-      <tr ng-repeat="cliente in dadosCliente">
-        <td>Transpotadora</td>
-        <td>&nbsp{{cliente.trasnportadora}}</td>
+        
+      <tr ng-repeat="cliente in dadosPedido">
+        <td>Pedido: {{cliente.id_vtex}}</td>
+        <td>&nbsp{{cliente.number}}</td>
+        <td>&nbsp {{cliente.data | date:'dd-MM-yyyy'}}</td>
+        
+        <td ng-if="cliente.status=='PENDING'">&nbsp PENDENTE</td> 
+        <td ng-if="cliente.status=='CLOSED'">&nbsp FECHADO</td> 
+        <td ng-if="cliente.status=='ACTIVE'">&nbsp ATIVO</td> 
+        <td ng-if="cliente.status=='CANCELLED'">&nbsp CANCELADO</td>
+        <td ng-if="cliente.status=='RESOLVED'">&nbsp RESOLVIDO</td>
+        <td ng-if="cliente.status=='IN_PROGRESS'">&nbsp EM PROGRESSO</td> 
+
+        <td>&nbsp{{cliente.source}}</td>       
+        <td>&nbsp{{cliente.value}}</td>       
+        <td>&nbsp{{cliente.description}}</td>       
+        <td>&nbsp{{cliente.trasnportadora}}</td>    
       </tr>
-    </table>
+    </table>  
   </div>
   <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
   <script>
     // Initialise Apps framework client. See also:
     // https://developer.zendesk.com/apps/docs/developer-guide/getting_started
     var client = ZAFClient.init();
-    client.invoke('resize', { width: '100%', height: '200px' });
+    //client.invoke('resize', { width: '100%', height: '200px' });
   </script>
   
   <!-- Chamada dos scripts para rodar o iframe.html --> 

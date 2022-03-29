@@ -18,6 +18,14 @@
       }
     }
   },
+  "parameters": [
+    {
+      "name": "urlCEP",
+      "type": "text",
+       "default": "https://viacep.com.br/ws/",
+       "method": "GET"
+    }
+  ],
   "version": "1.0",
   "frameworkVersion": "2.0"
 }

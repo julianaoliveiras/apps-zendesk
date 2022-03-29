@@ -15,6 +15,20 @@
       }
     }
   },
+  "parameters": [
+    {
+      "name": "urlCPF",
+      "type": "text",
+       "default": "https://n0e6xtbvqa.execute-api.us-east-1.amazonaws.com/default/flordemaio-zendesk-mock?cpf=",
+       "method": "GET"
+    },
+    {
+      "name": "urlPedido",
+      "type": "text",
+       "default": "https://v4c1btaq78.execute-api.us-east-1.amazonaws.com/default/allShopping?idShopping=",
+       "method": "GET"
+    }
+  ],
   "version": "1.0",
   "frameworkVersion": "2.0"
 }

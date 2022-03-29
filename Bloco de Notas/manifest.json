@@ -15,6 +15,20 @@
       }
     }
   },
+  "parameters": [
+    {
+      "name": "urlRelacionamento",
+      "type": "text",
+       "default": "bloco_de_notas_user",
+       "method": "GET"
+    },
+    {
+      "name": "urlBlocoNotas",
+      "type": "text",
+       "default": "https://alunos9975.zendesk.com/api/sunshine/objects/records/",
+       "method": "GET"
+    }
+  ],
   "version": "1.0",
   "frameworkVersion": "2.0"
 }

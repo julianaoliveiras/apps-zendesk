@@ -1,13 +1,21 @@
-angularjs.controller('angularjs', ['$scope', 'zendeskService', function($scope, zendeskService){
-   
-    $scope.consultar = function () {
-        $scope.dadosCliente = [];
-        
-        if ($scope.consultaCEP.length == 8) {
-            zendeskService.pegarCEP($scope.consultaCEP).then(function (response){
-                $scope.dadosCliente.push(response)
-                console.log($scope.dadosCliente)
-            });
-        }
-    }   
+angularjs.controller("angularjs", ["$scope","zendeskService", function ($scope, zendeskService) {
+ 
+  var urlCEP;
+  $scope.consultar = function () {
+    
+    $scope.dadosCliente = [];
+    client.metadata().then(function (parameters) {
+      urlCEP = parameters.settings.urlCEP;
+      
+      zendeskService.pegarCEP(urlCEP, $scope.consultaCEP).then(function (response) {
+        $scope.dadosCliente.push(response);
+      }).catch(function (error) {
+        console.log(error);
+        client.invoke("notify",["Não foi possível consultar o CEP"],"error",5000);
+      });
+    }).catch(function (error) {
+      console.log(error);
+      client.invoke("notify",["Não foi possível acessar os parâmetros"],"error",5000);
+    });
+  };
 }]);

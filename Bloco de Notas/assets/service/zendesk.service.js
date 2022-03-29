@@ -4,12 +4,26 @@
         var client = ZAFClient.init();
 
         return {
-            
-            getBlocoNotas: function(){
+                     
+            getRelacionamento: function(urlRelacionamento, idUser){
                 var deferred = $q.defer();
                 let options ={
                 method: "GET",
-                url: "https://viaconsulting7794.zendesk.com/api/sunshine/objects/records/05e24a85-ab8c-11ec-a4b4-1b124cb0265f",
+                url: "https://alunos9975.zendesk.com/api/sunshine/objects/records/zen:user:"+ idUser +"/relationships/"+ urlRelacionamento,                 
+            };
+            client.request(options).then(function (data){
+                    deferred.resolve(data);
+                }).catch(function(error){
+                    deferred.reject(error);
+                });
+                return deferred.promise;
+
+            },
+            getBlocoNotas: function(urlBlocoNotas, idTarget){
+                var deferred = $q.defer();
+                let options ={
+                method: "GET",
+                url: urlBlocoNotas + idTarget,   
                 
             };
             client.request(options).then(function (data){
@@ -19,21 +33,8 @@
                 });
                 return deferred.promise;
             }, 
-            getUser: function (id) {
-                var deferred = $q.defer();
-                let options ={
-                    method: "GET",
-                    url: "https://viaconsulting7794.zendesk.com/api/sunshine/objects/records/zen:user:" + id +"/relationships/bloco_de_notas_usuario", 
-                };
-                client.request(options).then(function (data){
-                        deferred.resolve(data);
-                    }).catch(function(error){
-                        deferred.reject(error);
-                    });
-                    return deferred.promise;
-                },        
-            criarBlocoNotas: function (texto) {
-
+             
+            salvarBlocoNotas: function (urlBlocoNotas, idTarget, texto) {
                 let bloco = {
                     "data": {
                         "attributes": {
@@ -41,13 +42,11 @@
                         }
                     }
                 }
-                console.log(bloco)
                 var deferred = $q.defer();
                 client.request({
-                    url: "https://viaconsulting7794.zendesk.com/api/sunshine/objects/records/05e24a85-ab8c-11ec-a4b4-1b124cb0265f",
+                    url: urlBlocoNotas + idTarget,
                     type: "PATCH",
                     contentType: 'application/merge-patch+json',
-                   
                     data: JSON.stringify(bloco)
                 }).then(function (data) {
                     deferred.resolve(data)
@@ -55,10 +54,7 @@
                     deferred.reject(error)
                 })
                 return deferred.promise;
-            }, 
-            
-            
-            
+            },                                  
         }
     }]);
 })();

@@ -8,10 +8,10 @@
         var client = ZAFClient.init();
        
         return{
-            pegarCPF: function(cpf){
-                var deferred = $q.defer();
+            pegarCPF: function(urlCPF, cpf){
+                var deferred = $q.defer(); 
                 let options = {
-                    url: "https://n0e6xtbvqa.execute-api.us-east-1.amazonaws.com/default/flordemaio-zendesk-mock?cpf=" + cpf,
+                    url: urlCPF + cpf,
                     cors: false,
                     method: "GET",
                     headers: {
@@ -26,10 +26,11 @@
                 });
                 return deferred.promise;
             },
-            pegarPedido: function(cpf){
+            
+            pegarPedido: function(urlPedido, pedido){
                 var deferred = $q.defer();
                 let options = {
-                    url:"https://v4c1btaq78.execute-api.us-east-1.amazonaws.com/default/allShopping?idShopping=" + cpf,
+                    url: urlPedido + pedido,
                     cors: false,
                     method: "GET",
                     headers:{
